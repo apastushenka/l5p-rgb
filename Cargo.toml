@@ -1,0 +1,3 @@
+[workspace]
+
+members = ["l5p-rgb", "l5p-cli"]
