@@ -112,6 +112,7 @@ name = "l5p-rgb"
 version = "0.1.0"
 dependencies = [
  "hidapi",
+ "once_cell",
 ]
 
 [[package]]

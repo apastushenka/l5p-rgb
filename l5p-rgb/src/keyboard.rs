@@ -1,8 +1,16 @@
 use crate::effect::Effect;
 use hidapi::{HidApi, HidDevice};
-use std::error::Error;
+use once_cell::sync::Lazy;
+use std::{collections::HashSet, error::Error};
 
-const DEVICES: &[(u16, u16)] = &[(0x048d, 0xc965)];
+static DEVICES: Lazy<HashSet<(u16, u16)>> = Lazy::new(|| {
+    let mut devices = HashSet::new();
+    devices.insert((0x048d, 0xc955));
+    devices.insert((0x048d, 0xc963));
+    devices.insert((0x048d, 0xc965));
+    devices.insert((0x048d, 0xc975));
+    devices
+});
 
 pub struct Keyboard {
     keyboard: HidDevice,
