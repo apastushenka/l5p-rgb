@@ -4,7 +4,7 @@ trait Serialize {
     fn serialize(&self, payload: &mut Payload);
 }
 
-pub type Payload = [u8; 33];
+pub(crate) type Payload = [u8; 33];
 
 #[derive(Clone, Debug)]
 pub struct Rgb(pub u8, pub u8, pub u8);
@@ -95,7 +95,7 @@ impl Serialize for Effect {
 }
 
 impl Effect {
-    pub fn build(&self) -> Payload {
+    pub(crate) fn build(&self) -> Payload {
         let mut payload = [0; 33];
 
         self.serialize(&mut payload);
