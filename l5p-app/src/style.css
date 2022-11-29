@@ -1,0 +1,21 @@
+.column {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+}
+
+.color-zone {
+    width: 25%;
+    height: 200px;
+    border: 1px solid black;
+    margin: 2px;
+}
+
+.spacer {
+    flex: 1;
+}
