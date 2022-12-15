@@ -4,7 +4,7 @@
 )]
 
 use l5p_rgb::{
-    effect::{Brightness, Effect},
+    effect::{Brightness, Effect, Speed},
     keyboard::Keyboard,
 };
 use serde::Deserialize;
@@ -47,6 +47,22 @@ fn set_static_effect(
     set_effect(state, effect)
 }
 
+#[tauri::command]
+fn set_breath_effect(
+    state: tauri::State<Mutex<Keyboard>>,
+    color: Color,
+    brightness: u8,
+    speed: u8,
+) -> Result<(), String> {
+    let effect = Effect::Breath {
+        color: color.into(),
+        brightness: Brightness::try_from(brightness)?,
+        speed: Speed::try_from(speed)?,
+    };
+
+    set_effect(state, effect)
+}
+
 fn set_effect(state: tauri::State<Mutex<Keyboard>>, effect: Effect) -> Result<(), String> {
     println!("Set effect: {:?}", effect);
 
@@ -60,7 +76,10 @@ fn main() {
 
     tauri::Builder::default()
         .manage(Mutex::new(keyboard))
-        .invoke_handler(tauri::generate_handler![set_static_effect])
+        .invoke_handler(tauri::generate_handler![
+            set_static_effect,
+            set_breath_effect
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

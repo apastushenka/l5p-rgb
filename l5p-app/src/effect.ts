@@ -1,1 +1,1 @@
-export type Effect = 'static';
+export type Effect = 'static' | 'breath';
