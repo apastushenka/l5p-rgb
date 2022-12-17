@@ -3,8 +3,9 @@ import { EffectPicker } from './components/EffectPicker';
 
 import { BreathEffect } from './components/BreathEffect';
 import { StaticEffect } from './components/StaticEffect';
+import { WaveEffect } from './components/WaveEffect';
 
-import { setBreathEffect, setStaticEffect } from './api';
+import { setBreathEffect, setStaticEffect, setWaveEffect } from './api';
 import { Color } from './color';
 import { EffectState } from './effect';
 
@@ -17,6 +18,7 @@ const DEFAULT_COLOR: Color = [
 
 const DEFAULT_BRIGHTNESS = 1;
 const DEFAULT_SPEED = 1;
+const DEFAULT_DIRECTION = 'ltr';
 
 function App() {
   let [effectState, setEffectState] = useState<EffectState>({
@@ -30,6 +32,11 @@ function App() {
       brightness: DEFAULT_BRIGHTNESS,
       speed: DEFAULT_SPEED,
     },
+    wave: {
+      brightness: DEFAULT_BRIGHTNESS,
+      speed: DEFAULT_SPEED,
+      direction: DEFAULT_DIRECTION,
+    }
   });
 
   useEffect(() => {
@@ -55,6 +62,14 @@ function App() {
           {effectPicker}
         </BreathEffect>
       )
+
+    case 'wave':
+      return (
+        <WaveEffect state={effectState.wave}
+          onChange={state => setEffectState({ ...effectState, wave: state })}>
+          {effectPicker}
+        </WaveEffect>
+      )
   }
 }
 
@@ -64,6 +79,8 @@ function setEffect(effect: EffectState) {
       return setStaticEffect(effect.static);
     case 'breath':
       return setBreathEffect(effect.breath);
+    case 'wave':
+      return setWaveEffect(effect.wave);
   }
 }
 

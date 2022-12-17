@@ -8,3 +8,7 @@ export function setStaticEffect(effect: { color: Color, brightness: number }) {
 export function setBreathEffect(effect: { color: Color, brightness: number, speed: number }) {
   return invoke('set_breath_effect', effect);
 }
+
+export function setWaveEffect(effect: { brightness: number, speed: number, direction: 'ltr' | 'rtl' }) {
+  return invoke('set_wave_effect', effect);
+}

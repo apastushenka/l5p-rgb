@@ -4,7 +4,7 @@
 )]
 
 use l5p_rgb::{
-    effect::{Brightness, Effect, Speed},
+    effect::{Brightness, Direction, Effect, Speed},
     keyboard::Keyboard,
 };
 use serde::Deserialize;
@@ -63,6 +63,28 @@ fn set_breath_effect(
     set_effect(state, effect)
 }
 
+#[tauri::command]
+fn set_wave_effect(
+    state: tauri::State<Mutex<Keyboard>>,
+    brightness: u8,
+    speed: u8,
+    direction: &str,
+) -> Result<(), String> {
+    let direction = match direction {
+        "ltr" => Direction::LeftToRight,
+        "rtl" => Direction::RightToRight,
+        _ => return Err("invalid direction".into()),
+    };
+
+    let effect = Effect::Wave {
+        brightness: Brightness::try_from(brightness)?,
+        speed: Speed::try_from(speed)?,
+        direction,
+    };
+
+    set_effect(state, effect)
+}
+
 fn set_effect(state: tauri::State<Mutex<Keyboard>>, effect: Effect) -> Result<(), String> {
     println!("Set effect: {:?}", effect);
 
@@ -78,7 +100,8 @@ fn main() {
         .manage(Mutex::new(keyboard))
         .invoke_handler(tauri::generate_handler![
             set_static_effect,
-            set_breath_effect
+            set_breath_effect,
+            set_wave_effect,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
