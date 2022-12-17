@@ -18,3 +18,9 @@ export type EffectState = {
   static: StaticState,
   breath: BreathState,
 };
+
+export type EffectProps<T> = {
+  children: JSX.Element,
+  state: T,
+  onChange: (state: T) => void,
+};

@@ -3,15 +3,9 @@ import { ColorPicker } from './ColorPicker';
 import { Spacer } from './Spacer';
 import { Speed } from './Speed';
 
-import { BreathState } from '../effect';
+import { BreathState, EffectProps } from '../effect';
 
-type BreathEffectProps = {
-  children: JSX.Element,
-  state: BreathState,
-  onChange: (state: BreathState) => void,
-};
-
-function BreathEffect({ children, state, onChange }: BreathEffectProps) {
+function BreathEffect({ children, state, onChange }: EffectProps<BreathState>) {
   return (
     <div className='column'>
       <div className='row'>

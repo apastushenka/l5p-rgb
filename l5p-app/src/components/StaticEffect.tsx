@@ -2,15 +2,9 @@ import { Brightness } from './Brightness';
 import { ColorPicker } from './ColorPicker';
 import { Spacer } from './Spacer';
 
-import { StaticState } from '../effect';
+import { EffectProps, StaticState } from '../effect';
 
-type StaticEffectProps = {
-  children: JSX.Element,
-  state: StaticState,
-  onChange: (state: StaticState) => void,
-};
-
-function StaticEffect({ children, state, onChange }: StaticEffectProps) {
+function StaticEffect({ children, state, onChange }: EffectProps<StaticState>) {
   return (
     <div className='column'>
       <div className='row'>
