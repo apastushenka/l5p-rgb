@@ -1,34 +1,26 @@
-import { useEffect, useState } from 'react';
 import { Brightness } from './Brightness';
 import { ColorPicker } from './ColorPicker';
 import { Spacer } from './Spacer';
 
-import { setStaticEffect } from '../api';
-import { Color } from '../color';
+import { StaticState } from '../effect';
 
 type StaticEffectProps = {
   children: JSX.Element,
-  color: Color,
-  brightness: number,
+  state: StaticState,
+  onChange: (state: StaticState) => void,
 };
 
-function StaticEffect(props: StaticEffectProps) {
-  let [color, setColor] = useState(props.color);
-  let [brightness, setBrightness] = useState(props.brightness);
-
-  useEffect(() => {
-    setStaticEffect(color, brightness)
-      .catch((error) => console.error(`Error: ${error}`));
-  }, [color, brightness]);
-
+function StaticEffect({ children, state, onChange }: StaticEffectProps) {
   return (
     <div className='column'>
       <div className='row'>
-        {props.children}
+        {children}
         <Spacer />
-        <Brightness value={brightness} onChange={setBrightness} />
+        <Brightness value={state.brightness}
+          onChange={brightness => onChange({ ...state, brightness })} />
       </div>
-      <ColorPicker color={color} onChange={setColor} />
+      <ColorPicker color={state.color}
+        onChange={color => onChange({ ...state, color })} />
     </div>
   );
 }

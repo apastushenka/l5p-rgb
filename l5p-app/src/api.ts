@@ -1,10 +1,10 @@
 import { invoke } from '@tauri-apps/api';
 import { Color } from './color';
 
-export function setStaticEffect(color: Color, brightness: number) {
-	return invoke('set_static_effect', { color, brightness });
+export function setStaticEffect(effect: { color: Color, brightness: number }) {
+  return invoke('set_static_effect', effect);
 }
 
-export function setBreathEffect(color: Color, brightness: number, speed: number) {
-	return invoke('set_breath_effect', { color, brightness, speed });
+export function setBreathEffect(effect: { color: Color, brightness: number, speed: number }) {
+  return invoke('set_breath_effect', effect);
 }

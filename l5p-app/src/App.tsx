@@ -1,11 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { EffectPicker } from './components/EffectPicker';
 
 import { BreathEffect } from './components/BreathEffect';
 import { StaticEffect } from './components/StaticEffect';
 
+import { setBreathEffect, setStaticEffect } from './api';
 import { Color } from './color';
-import { Effect } from './effect';
+import { EffectState } from './effect';
 
 const DEFAULT_COLOR: Color = [
   { r: 255, g: 255, b: 255 },
@@ -18,24 +19,51 @@ const DEFAULT_BRIGHTNESS = 1;
 const DEFAULT_SPEED = 1;
 
 function App() {
-  let [effect, setEffect] = useState<Effect>('static');
+  let [effectState, setEffectState] = useState<EffectState>({
+    current: 'static',
+    static: {
+      color: DEFAULT_COLOR,
+      brightness: DEFAULT_BRIGHTNESS,
+    },
+    breath: {
+      color: DEFAULT_COLOR,
+      brightness: DEFAULT_BRIGHTNESS,
+      speed: DEFAULT_SPEED,
+    },
+  });
 
-  let effectPicker = <EffectPicker value={effect} onChange={setEffect} />
+  useEffect(() => {
+    setEffect(effectState).catch((error) => console.error(`Error: ${error}`));
+  }, [effectState]);
 
-  switch (effect) {
+  let effectPicker = <EffectPicker value={effectState.current}
+    onChange={current => setEffectState({ ...effectState, current })} />
+
+  switch (effectState.current) {
     case 'static':
       return (
-        <StaticEffect color={DEFAULT_COLOR} brightness={DEFAULT_BRIGHTNESS}>
+        <StaticEffect state={effectState.static}
+          onChange={state => setEffectState({ ...effectState, static: state })}>
           {effectPicker}
         </StaticEffect>
       )
 
     case 'breath':
       return (
-        <BreathEffect color={DEFAULT_COLOR} brightness={DEFAULT_BRIGHTNESS} speed={DEFAULT_SPEED}>
+        <BreathEffect state={effectState.breath}
+          onChange={state => setEffectState({ ...effectState, breath: state })}>
           {effectPicker}
         </BreathEffect>
       )
+  }
+}
+
+function setEffect(effect: EffectState) {
+  switch (effect.current) {
+    case 'static':
+      return setStaticEffect(effect.static);
+    case 'breath':
+      return setBreathEffect(effect.breath);
   }
 }
 
