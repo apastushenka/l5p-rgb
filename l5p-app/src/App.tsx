@@ -2,10 +2,11 @@ import { useEffect, useState } from 'react';
 import { EffectPicker } from './components/EffectPicker';
 
 import { BreathEffect } from './components/BreathEffect';
+import { SmoothEffect } from './components/SmoothEffect';
 import { StaticEffect } from './components/StaticEffect';
 import { WaveEffect } from './components/WaveEffect';
 
-import { setBreathEffect, setStaticEffect, setWaveEffect } from './api';
+import { setBreathEffect, setSmoothEffect, setStaticEffect, setWaveEffect } from './api';
 import { Color } from './color';
 import { EffectState } from './effect';
 
@@ -36,7 +37,11 @@ function App() {
       brightness: DEFAULT_BRIGHTNESS,
       speed: DEFAULT_SPEED,
       direction: DEFAULT_DIRECTION,
-    }
+    },
+    smooth: {
+      brightness: DEFAULT_BRIGHTNESS,
+      speed: DEFAULT_SPEED,
+    },
   });
 
   useEffect(() => {
@@ -70,6 +75,14 @@ function App() {
           {effectPicker}
         </WaveEffect>
       )
+
+    case 'smooth':
+      return (
+        <SmoothEffect state={effectState.smooth}
+          onChange={state => setEffectState({ ...effectState, smooth: state })}>
+          {effectPicker}
+        </SmoothEffect>
+      )
   }
 }
 
@@ -81,6 +94,8 @@ function setEffect(effect: EffectState) {
       return setBreathEffect(effect.breath);
     case 'wave':
       return setWaveEffect(effect.wave);
+    case 'smooth':
+      return setSmoothEffect(effect.smooth);
   }
 }
 

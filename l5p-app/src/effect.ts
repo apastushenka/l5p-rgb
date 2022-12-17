@@ -1,6 +1,6 @@
 import { Color } from './color';
 
-export type Effect = 'static' | 'breath' | 'wave';
+export type Effect = 'static' | 'breath' | 'wave' | 'smooth';
 
 export type Direction = 'ltr' | 'rtl';
 
@@ -21,11 +21,17 @@ export type WaveState = {
   direction: Direction,
 };
 
+export type SmoothState = {
+  brightness: number,
+  speed: number,
+};
+
 export type EffectState = {
   current: Effect,
   static: StaticState,
   breath: BreathState,
   wave: WaveState,
+  smooth: SmoothState,
 };
 
 export type EffectProps<T> = {

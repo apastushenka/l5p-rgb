@@ -16,6 +16,7 @@ function EffectPicker({ value, onChange }: EffectProps) {
         <option value='static'>Static</option>
         <option value='breath'>Breath</option>
         <option value='wave'>Wave</option>
+        <option value='smooth'>Smooth</option>
       </Select>
     </div>
   );

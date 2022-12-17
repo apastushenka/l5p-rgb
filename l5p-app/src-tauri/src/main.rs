@@ -85,6 +85,20 @@ fn set_wave_effect(
     set_effect(state, effect)
 }
 
+#[tauri::command]
+fn set_smooth_effect(
+    state: tauri::State<Mutex<Keyboard>>,
+    brightness: u8,
+    speed: u8,
+) -> Result<(), String> {
+    let effect = Effect::Smooth {
+        brightness: Brightness::try_from(brightness)?,
+        speed: Speed::try_from(speed)?,
+    };
+
+    set_effect(state, effect)
+}
+
 fn set_effect(state: tauri::State<Mutex<Keyboard>>, effect: Effect) -> Result<(), String> {
     println!("Set effect: {:?}", effect);
 
@@ -102,6 +116,7 @@ fn main() {
             set_static_effect,
             set_breath_effect,
             set_wave_effect,
+            set_smooth_effect,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

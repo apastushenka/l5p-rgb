@@ -12,3 +12,7 @@ export function setBreathEffect(effect: { color: Color, brightness: number, spee
 export function setWaveEffect(effect: { brightness: number, speed: number, direction: 'ltr' | 'rtl' }) {
   return invoke('set_wave_effect', effect);
 }
+
+export function setSmoothEffect(effect: { brightness: number, speed: number }) {
+  return invoke('set_smooth_effect', effect);
+}
