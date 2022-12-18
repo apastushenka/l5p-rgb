@@ -11,7 +11,13 @@
   },
   "tauri": {
     "allowlist": {
-      "all": true
+      "all": true,
+      "fs": {
+        "scope": [
+          "$APPCONFIG",
+          "$APPCONFIG/*"
+        ]
+      }
     },
     "bundle": {
       "active": true,
@@ -28,7 +34,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.tauri.dev",
+      "identifier": "org.lp5-rgb",
       "longDescription": "",
       "macOS": {
         "entitlements": null,

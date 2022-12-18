@@ -7,45 +7,16 @@ import { StaticEffect } from './components/StaticEffect';
 import { WaveEffect } from './components/WaveEffect';
 
 import { setBreathEffect, setSmoothEffect, setStaticEffect, setWaveEffect } from './api';
-import { Color } from './color';
+import { save } from './config';
 import { EffectState } from './effect';
 
-const DEFAULT_COLOR: Color = [
-  { r: 255, g: 255, b: 255 },
-  { r: 255, g: 255, b: 255 },
-  { r: 255, g: 255, b: 255 },
-  { r: 255, g: 255, b: 255 },
-];
-
-const DEFAULT_BRIGHTNESS = 1;
-const DEFAULT_SPEED = 1;
-const DEFAULT_DIRECTION = 'ltr';
-
-function App() {
-  let [effectState, setEffectState] = useState<EffectState>({
-    current: 'static',
-    static: {
-      color: DEFAULT_COLOR,
-      brightness: DEFAULT_BRIGHTNESS,
-    },
-    breath: {
-      color: DEFAULT_COLOR,
-      brightness: DEFAULT_BRIGHTNESS,
-      speed: DEFAULT_SPEED,
-    },
-    wave: {
-      brightness: DEFAULT_BRIGHTNESS,
-      speed: DEFAULT_SPEED,
-      direction: DEFAULT_DIRECTION,
-    },
-    smooth: {
-      brightness: DEFAULT_BRIGHTNESS,
-      speed: DEFAULT_SPEED,
-    },
-  });
+function App({ state }: { state: EffectState }) {
+  let [effectState, setEffectState] = useState<EffectState>(state);
 
   useEffect(() => {
-    setEffect(effectState).catch((error) => console.error(`Error: ${error}`));
+    setEffect(effectState)
+      .then(() => save(effectState))
+      .catch((error) => console.error(`Error: ${error}`));
   }, [effectState]);
 
   let effectPicker = <EffectPicker value={effectState.current}
