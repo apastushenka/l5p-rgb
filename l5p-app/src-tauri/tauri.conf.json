@@ -61,8 +61,8 @@
     "windows": [
       {
         "fullscreen": false,
-        "height": 600,
-        "resizable": true,
+        "height": 320,
+        "resizable": false,
         "title": "Legion RGB",
         "width": 800
       }
