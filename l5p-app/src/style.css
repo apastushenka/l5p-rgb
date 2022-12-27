@@ -16,6 +16,11 @@
     margin: 2px;
 }
 
+.color-picker {
+    display: flex;
+    justify-content: center;
+}
+
 .spacer {
     flex: 1;
 }
