@@ -1,4 +1,9 @@
 use std::ops::RangeBounds;
+use thiserror::Error;
+
+#[derive(Error, Debug)]
+#[error("value out of range")]
+pub struct OutOfRangeError;
 
 #[derive(Clone, Debug)]
 pub struct Ranged<const MIN: u8, const MAX: u8>(u8);
@@ -14,13 +19,13 @@ impl<const MIN: u8, const MAX: u8> Ranged<MIN, MAX> {
 }
 
 impl<const MIN: u8, const MAX: u8> TryFrom<u8> for Ranged<MIN, MAX> {
-    type Error = &'static str;
+    type Error = OutOfRangeError;
 
     fn try_from(value: u8) -> Result<Self, Self::Error> {
         if Self::range().contains(&value) {
             Ok(Self(value))
         } else {
-            Err("value out of range")
+            Err(OutOfRangeError)
         }
     }
 }

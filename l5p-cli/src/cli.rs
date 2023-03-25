@@ -1,3 +1,4 @@
+use anyhow::Result;
 use clap::{Args, Parser, Subcommand, ValueEnum};
 use csscolorparser::ParseColorError;
 use l5p_rgb::{
@@ -60,16 +61,16 @@ fn parse_color(s: &str) -> Result<Rgb, ParseColorError> {
     Ok(Rgb(r, g, b))
 }
 
-fn parse_brightness(s: &str) -> Result<Brightness, String> {
+fn parse_brightness(s: &str) -> Result<Brightness> {
     parse_ranged(s)
 }
 
-fn parse_speed(s: &str) -> Result<Speed, String> {
+fn parse_speed(s: &str) -> Result<Speed> {
     parse_ranged(s)
 }
 
-fn parse_ranged<const MIN: u8, const MAX: u8>(s: &str) -> Result<Ranged<MIN, MAX>, String> {
-    let value = s.parse::<u8>().map_err(|e| e.to_string())?;
+fn parse_ranged<const MIN: u8, const MAX: u8>(s: &str) -> Result<Ranged<MIN, MAX>> {
+    let value = s.parse::<u8>()?;
     let result = value.try_into()?;
 
     Ok(result)

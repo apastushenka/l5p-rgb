@@ -1,10 +1,11 @@
+use anyhow::{Context, Result};
 use clap::Parser;
 use l5p_rgb::{effect::Effect, keyboard::Keyboard};
 
 mod cli;
 use cli::{Cli, Colors, Direction, Effects};
 
-fn main() -> Result<(), String> {
+fn main() -> Result<()> {
     let cli = Cli::parse();
 
     let effect = match cli.effect {
@@ -41,11 +42,11 @@ fn main() -> Result<(), String> {
         },
     };
 
-    let keyboard = Keyboard::new().map_err(|e| format!("Can not open device: {}", e))?;
+    let keyboard = Keyboard::new().context("Failed to open device")?;
 
     keyboard
         .set_effect(effect)
-        .map_err(|e| format!("Can not write to device: {}", e))?;
+        .context("Failed to write to device")?;
 
     Ok(())
 }

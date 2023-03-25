@@ -1,7 +1,8 @@
 use crate::effect::Effect;
-use hidapi::{HidApi, HidDevice};
+use hidapi::{HidApi, HidDevice, HidError};
 use once_cell::sync::Lazy;
-use std::{collections::HashSet, error::Error};
+use std::collections::HashSet;
+use thiserror::Error;
 
 static DEVICES: Lazy<HashSet<(u16, u16)>> = Lazy::new(|| {
     let mut devices = HashSet::new();
@@ -12,18 +13,27 @@ static DEVICES: Lazy<HashSet<(u16, u16)>> = Lazy::new(|| {
     devices
 });
 
+#[derive(Error, Debug)]
+pub enum KeyboardError {
+    #[error("no supported devices found")]
+    DeviceNotFound,
+
+    #[error("device error")]
+    DeviceError(#[from] HidError),
+}
+
 pub struct Keyboard {
     keyboard: HidDevice,
 }
 
 impl Keyboard {
-    pub fn new() -> Result<Self, Box<dyn Error>> {
+    pub fn new() -> Result<Self, KeyboardError> {
         let api = HidApi::new()?;
 
         let device = api
             .device_list()
             .find(|&d| DEVICES.contains(&(d.vendor_id(), d.product_id())))
-            .ok_or("device not found")?;
+            .ok_or(KeyboardError::DeviceNotFound)?;
 
         let keyboard = Keyboard {
             keyboard: device.open_device(&api)?,
@@ -32,7 +42,7 @@ impl Keyboard {
         Ok(keyboard)
     }
 
-    pub fn set_effect(&self, effect: Effect) -> Result<(), Box<dyn Error>> {
+    pub fn set_effect(&self, effect: Effect) -> Result<(), KeyboardError> {
         self.keyboard.send_feature_report(&effect.build())?;
 
         Ok(())

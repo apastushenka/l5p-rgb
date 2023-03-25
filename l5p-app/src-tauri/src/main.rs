@@ -5,10 +5,13 @@
 
 use l5p_rgb::{
     effect::{Brightness, Direction, Effect, Speed},
-    keyboard::Keyboard,
+    keyboard::{Keyboard, KeyboardError},
 };
 use serde::Deserialize;
 use std::sync::Mutex;
+
+mod error;
+use error::Error;
 
 #[derive(Deserialize)]
 struct Rgb {
@@ -33,18 +36,22 @@ impl From<Color> for l5p_rgb::effect::Color {
     }
 }
 
+type CommandResult = Result<(), Error>;
+
 #[tauri::command]
 fn set_static_effect(
     state: tauri::State<Mutex<Keyboard>>,
     color: Color,
     brightness: u8,
-) -> Result<(), String> {
+) -> CommandResult {
     let effect = Effect::Static {
         color: color.into(),
         brightness: Brightness::try_from(brightness)?,
     };
 
-    set_effect(state, effect)
+    set_effect(state, effect)?;
+
+    Ok(())
 }
 
 #[tauri::command]
@@ -53,14 +60,16 @@ fn set_breath_effect(
     color: Color,
     brightness: u8,
     speed: u8,
-) -> Result<(), String> {
+) -> CommandResult {
     let effect = Effect::Breath {
         color: color.into(),
         brightness: Brightness::try_from(brightness)?,
         speed: Speed::try_from(speed)?,
     };
 
-    set_effect(state, effect)
+    set_effect(state, effect)?;
+
+    Ok(())
 }
 
 #[tauri::command]
@@ -69,11 +78,11 @@ fn set_wave_effect(
     brightness: u8,
     speed: u8,
     direction: &str,
-) -> Result<(), String> {
+) -> CommandResult {
     let direction = match direction {
         "ltr" => Direction::LeftToRight,
         "rtl" => Direction::RightToRight,
-        _ => return Err("invalid direction".into()),
+        _ => panic!("invalid direction"),
     };
 
     let effect = Effect::Wave {
@@ -82,7 +91,9 @@ fn set_wave_effect(
         direction,
     };
 
-    set_effect(state, effect)
+    set_effect(state, effect)?;
+
+    Ok(())
 }
 
 #[tauri::command]
@@ -90,21 +101,23 @@ fn set_smooth_effect(
     state: tauri::State<Mutex<Keyboard>>,
     brightness: u8,
     speed: u8,
-) -> Result<(), String> {
+) -> CommandResult {
     let effect = Effect::Smooth {
         brightness: Brightness::try_from(brightness)?,
         speed: Speed::try_from(speed)?,
     };
 
-    set_effect(state, effect)
+    set_effect(state, effect)?;
+
+    Ok(())
 }
 
-fn set_effect(state: tauri::State<Mutex<Keyboard>>, effect: Effect) -> Result<(), String> {
+fn set_effect(state: tauri::State<Mutex<Keyboard>>, effect: Effect) -> Result<(), KeyboardError> {
     println!("Set effect: {:?}", effect);
 
     let keyboard = state.lock().unwrap();
 
-    keyboard.set_effect(effect).map_err(|e| e.to_string())
+    keyboard.set_effect(effect)
 }
 
 fn main() {
