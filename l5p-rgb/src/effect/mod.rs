@@ -44,10 +44,40 @@ impl Serialize for Effect {
         payload[1] = 0x16;
 
         payload[2] = match self {
-            Effect::Static { .. } => 0x01,
-            Effect::Breath { .. } => 0x03,
-            Effect::Wave { .. } => 0x04,
-            Effect::Smooth { .. } => 0x06,
+            Effect::Static { color, brightness } => {
+                // TODO: do we really need it?
+                let speed = Speed::try_from(1).unwrap();
+                speed.serialize(payload);
+
+                color.serialize(payload);
+                brightness.serialize(payload);
+                0x01
+            }
+            Effect::Breath {
+                color,
+                brightness,
+                speed,
+            } => {
+                color.serialize(payload);
+                brightness.serialize(payload);
+                speed.serialize(payload);
+                0x03
+            }
+            Effect::Wave {
+                brightness,
+                speed,
+                direction,
+            } => {
+                brightness.serialize(payload);
+                speed.serialize(payload);
+                direction.serialize(payload);
+                0x04
+            }
+            Effect::Smooth { brightness, speed } => {
+                brightness.serialize(payload);
+                speed.serialize(payload);
+                0x06
+            }
         }
     }
 }
@@ -55,37 +85,7 @@ impl Serialize for Effect {
 impl Effect {
     pub(crate) fn build(&self) -> Payload {
         let mut payload = [0; 33];
-
         self.serialize(&mut payload);
-
-        let items: [Option<&dyn Serialize>; 3] = match self {
-            Effect::Static { color, brightness } => {
-                // TODO: do we really need it?
-                let speed = Speed::try_from(1).unwrap();
-                speed.serialize(&mut payload);
-
-                [Some(color), Some(brightness), None]
-            }
-
-            Effect::Breath {
-                color,
-                brightness,
-                speed,
-            } => [Some(color), Some(brightness), Some(speed)],
-
-            Effect::Wave {
-                brightness,
-                speed,
-                direction,
-            } => [Some(brightness), Some(speed), Some(direction)],
-
-            Effect::Smooth { brightness, speed } => [Some(brightness), Some(speed), None],
-        };
-
-        for i in items.iter().flatten() {
-            i.serialize(&mut payload);
-        }
-
         payload
     }
 }
