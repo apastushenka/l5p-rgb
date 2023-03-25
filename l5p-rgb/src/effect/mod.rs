@@ -1,62 +1,20 @@
-use crate::ranged::Ranged;
+mod color;
+pub use color::{Color, Rgb};
+
+mod brightness;
+pub use brightness::Brightness;
+
+mod speed;
+pub use speed::Speed;
+
+mod direction;
+pub use direction::Direction;
 
 trait Serialize {
     fn serialize(&self, payload: &mut Payload);
 }
 
 pub(crate) type Payload = [u8; 33];
-
-#[derive(Clone, Debug)]
-pub struct Rgb(pub u8, pub u8, pub u8);
-
-pub type Color = [Rgb; 4];
-
-impl Serialize for Color {
-    fn serialize(&self, payload: &mut Payload) {
-        let mut index = 5;
-        for &Rgb(r, g, b) in self {
-            payload[index] = r;
-            index += 1;
-
-            payload[index] = g;
-            index += 1;
-
-            payload[index] = b;
-            index += 1;
-        }
-    }
-}
-
-pub type Brightness = Ranged<1, 2>;
-
-impl Serialize for Brightness {
-    fn serialize(&self, payload: &mut Payload) {
-        payload[4] = self.value();
-    }
-}
-
-pub type Speed = Ranged<1, 4>;
-
-impl Serialize for Speed {
-    fn serialize(&self, payload: &mut Payload) {
-        payload[3] = self.value();
-    }
-}
-
-#[derive(Clone, Debug)]
-pub enum Direction {
-    LeftToRight,
-    RightToRight,
-}
-
-impl Serialize for Direction {
-    fn serialize(&self, payload: &mut Payload) {
-        match self {
-            Direction::LeftToRight => payload[19] = 0x01,
-            Direction::RightToRight => payload[18] = 0x01,
-        }
-    }
-}
 
 #[derive(Clone, Debug)]
 pub enum Effect {
